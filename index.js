@@ -1,6 +1,10 @@
 console.log("Make me do things!");
 
+// Create Web Socket Connection
+let socket = new WebSocket('ws://localhost:3001');
 let $messageContainer = $('.chat-message-list');
+let messageInput = document.querySelector("input[data-chat='message-input']");
+let sendButton = document.querySelector(".btn-default");
 
 let drawMessage = ({
     user: u,
@@ -44,3 +48,20 @@ let $messageRow = drawMessage({
 
 $messageContainer.append($messageRow);
 $messageRow.get(0).scrollIntoView();
+
+// Connection Opened
+socket.addEventListener('open', (event) => {
+  sendButton.addEventListener("click", () => {
+    let message = {
+      user: 'user',
+      message: messageInput.value,
+      timestamp: new Date()
+    };
+    socket.send(JSON.stringify(message));
+  });
+});
+
+// Listen for messages
+socket.addEventListener('message', (event) => {
+  $messageContainer.append(drawMessage(JSON.parse(event.data)));
+});
