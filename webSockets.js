@@ -7,9 +7,10 @@ webSocket.on('connection', sender => {
     sender.on('message', message => {
         // Broadcast to everyone else
         webSocket.clients.forEach(client => {
-            if (client !== sender && client.readyState === WS.OPEN) {
-                client.send(message);
-            }
+            client.send(message);
+            // if (client !== sender && client.readyState === WS.OPEN) {
+            //     client.send(message);
+            // }
         });
     });
 });
