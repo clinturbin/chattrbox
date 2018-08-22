@@ -6,6 +6,7 @@ let $messageContainer = $('.chat-message-list');
 let messageInput = document.querySelector("input[data-chat='message-input']");
 let sendButton = document.querySelector(".btn-default");
 let userName = prompt("What is your username?");
+let userList = document.querySelector(".user-list");
 
 let drawMessage = ({
     user: u,
@@ -51,13 +52,11 @@ $messageRow.get(0).scrollIntoView();
 
 // Connection Opened
 socket.addEventListener('open', (event) => {
-  sendButton.addEventListener("click", () => {
-    let message = {
-      user: userName,
-      message: messageInput.value,
-      timestamp: new Date()
-    };
-    socket.send(JSON.stringify(message));
+  addToParticipants();
+  sendButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    let messageObject = makeMessageObject();
+    socket.send(JSON.stringify(messageObject));
   });
 });
 
@@ -65,3 +64,20 @@ socket.addEventListener('open', (event) => {
 socket.addEventListener('message', (event) => {
   $messageContainer.append(drawMessage(JSON.parse(event.data)));
 });
+
+// socket.addEventListener('close', (event) => )
+
+let makeMessageObject = () => {
+  let messageObject = {
+    user: userName,
+    message: messageInput.value,
+    timestamp: new Date()
+  };
+  return messageObject;
+};
+
+let addToParticipants = () => {
+  let userListItem = document.createElement("li");
+  userListItem.textContent = userName;
+  userList.appendChild(userListItem);
+};

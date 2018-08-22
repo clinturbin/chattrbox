@@ -5,12 +5,28 @@ let webSocket = new WS.Server({port: 3001});
 webSocket.on('connection', sender => {
     console.log("Hey there! Someone connected");
     sender.on('message', message => {
-        // Broadcast to everyone else
         webSocket.clients.forEach(client => {
             client.send(message);
-            // if (client !== sender && client.readyState === WS.OPEN) {
-            //     client.send(message);
-            // }
         });
     });
 });
+
+// Alternate way to ask for 
+
+// webSocket.on('connection', sender => {
+//     console.log("Hey there! Someone connected");
+//     sender.send("What is your username");
+//     let username;
+//     sender.on('message', message => {
+//         if (!username) {
+//             username = message;
+//             webSocket.clients.forEach(client => {
+//                 client.send(message + " has joined!");
+//             });
+//         } else {
+//             webSocket.clients.forEach(client => {
+//                 client.send(username + ": " + message);
+//             });    
+//         }
+//     });
+// });
